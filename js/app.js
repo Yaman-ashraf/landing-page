@@ -36,7 +36,11 @@ const buildNav = () => {
     const fragment = document.createDocumentFragment();
     sections.forEach(section => {
         const navItem = document.createElement('li');
-        navItem.innerHTML = `<a href="#${section.id}" class="menu__link">${section.dataset.nav}</a>`;
+        navItem.innerHTML = `<a 
+        href="#${section.id}" 
+        class="menu__link">
+        ${section.dataset.nav}
+        </a>`;
         fragment.appendChild(navItem);
     });
     navbarList.appendChild(fragment);
@@ -108,21 +112,59 @@ const makeSectionsCollapsible = () => {
     });
 };
 
+// Create a section using template literals
+const createSectionTemplateLiteral = (section4, sectionContent) => {
+    const sectionHTML = `
+        <section id="${section4}">
+            <div class="landing__container">
+                <h2>${sectionContent.title}</h2>
+                <p>${sectionContent.content}</p>
+            </div>
+        </section>
+    `;
+    return sectionHTML;
+};
+
+// Add a new section to the page
+const addSection = (section4, sectionContent) => {
+    const sectionHTML = createSectionTemplateLiteral(section4, sectionContent);
+    document.getElementById('main__container').insertAdjacentHTML('beforeend', sectionHTML);
+
+    const newNavItem = document.createElement('li');
+    newNavItem.innerHTML = `<a 
+    href="#${section4}" 
+    class="menu__link">
+    ${sectionContent.title}
+    </a>`;
+    navbarList.appendChild(newNavItem);
+
+    // Refresh sections and navigation links
+    sections = document.querySelectorAll('section');
+};
+////////////////////////////////////////////
+
 /**
  * Events
  */
 
-// Build menu
+// Build menu, create scroll to top button, and make sections collapsible on DOMContentLoaded
 document.addEventListener('DOMContentLoaded', () => {
     buildNav();
     createScrollToTopButton();
     makeSectionsCollapsible();
+
+    // Add Section 4
+    addSection('section4', {
+        title: 'Section 4',
+        content: `Lorem ipsum dolor sit amet, consectetur adipiscing elit. Morbi fermentum metus faucibus lectus pharetra dapibus. Suspendisse potenti. Aenean aliquam elementum mi, ac euismod augue. Donec eget lacinia ex. Phasellus imperdiet porta orci eget mollis. Sed convallis sollicitudin mauris ac tincidunt. Donec bibendum, nulla eget bibendum consectetur, sem nisi aliquam leo, ut pulvinar quam nunc eu augue. Pellentesque maximus imperdiet elit a pharetra. Duis lectus mi, aliquam in mi quis, aliquam porttitor lacus. Morbi a tincidunt felis. Sed leo nunc, pharetra et elementum non, faucibus vitae elit. Integer nec libero venenatis libero ultricies molestie semper in tellus. Sed congue et odio sed euismod.
+Aliquam a convallis justo. Vivamus venenatis, erat eget pulvinar gravida, ipsum lacus aliquet velit, vel luctus diam ipsum a diam. Cras eu tincidunt arcu, vitae rhoncus purus. Vestibulum fermentum consectetur porttitor. Suspendisse imperdiet porttitor tortor, eget elementum tortor mollis non.`
+    });
 });
 
 // Scroll to section on link click
 navbarList.addEventListener('click', scrollToSection);
 
-// Set sections as active
+// Set sections as active and toggle scroll to top button on scroll
 document.addEventListener('scroll', () => {
     setActiveSection();
     toggleScrollToTopButton();
