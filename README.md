@@ -1,4 +1,4 @@
-# landing-page
+# Landing Page
 
 ## Project Overview
 
@@ -27,7 +27,7 @@ This project is a simple landing page that builds a navigation menu based on the
 -   CSS
 -   JavaScript (ES6)
 
-## Installation
+### Installation
 
 1. Clone the repository to your local machine:
     ```bash

@@ -14,7 +14,7 @@
 /**
  * Define Global Variables
  */
-const sections = document.querySelectorAll('section');
+let sections = document.querySelectorAll('section');
 const navbarList = document.getElementById('navbar__list');
 const scrollToTopBtn = document.createElement('button');
 let isScrolling;
@@ -50,12 +50,14 @@ const buildNav = () => {
 const setActiveSection = () => {
     sections.forEach(section => {
         const navLink = document.querySelector(`a[href="#${section.id}"]`);
-        if (isInViewport(section)) {
-            section.classList.add('your-active-class');
-            navLink.classList.add('active-link');
-        } else {
-            section.classList.remove('your-active-class');
-            navLink.classList.remove('active-link');
+        if (navLink) {
+            if (isInViewport(section)) {
+                section.classList.add('your-active-class');
+                navLink.classList.add('active-link');
+            } else {
+                section.classList.remove('your-active-class');
+                navLink.classList.remove('active-link');
+            }
         }
     });
 };
@@ -65,7 +67,9 @@ const scrollToSection = (event) => {
     event.preventDefault();
     if (event.target.nodeName === 'A') {
         const targetSection = document.querySelector(event.target.getAttribute('href'));
-        targetSection.scrollIntoView({ behavior: 'smooth' });
+        if (targetSection) {
+            targetSection.scrollIntoView({ behavior: 'smooth' });
+        }
     }
 };
 
@@ -100,18 +104,6 @@ const scrollToTop = () => {
     window.scrollTo({ top: 0, behavior: 'smooth' });
 };
 
-// // Make sections collapsible
-// const makeSectionsCollapsible = () => {
-//     sections.forEach(section => {
-//         const header = section.querySelector('h2');
-//         header.style.cursor = 'pointer';
-//         header.addEventListener('click', () => {
-//             const content = header.nextElementSibling;
-//             content.style.display = content.style.display === 'none' ? 'block' : 'none';
-//         });
-//     });
-// };
-
 // Make sections collapsible
 const makeSectionsCollapsible = () => {
     sections.forEach(section => {
@@ -120,17 +112,18 @@ const makeSectionsCollapsible = () => {
             header.style.cursor = 'pointer';
             header.addEventListener('click', () => {
                 const content = header.nextElementSibling;
-                content.style.display = content.style.display === 'none' ? 'block' : 'none';
+                if (content) {
+                    content.style.display = content.style.display === 'none' ? 'block' : 'none';
+                }
             });
         }
     });
 };
 
-
 // Create a section using template literals
-const createSectionTemplateLiteral = (section4, sectionContent) => {
+const createSectionTemplateLiteral = (sectionId, sectionContent) => {
     const sectionHTML = `
-        <section id="${section4}">
+        <section id="${sectionId}" data-nav="${sectionContent.title}">
             <div class="landing__container">
                 <h2>${sectionContent.title}</h2>
                 <p>${sectionContent.content}</p>
@@ -142,33 +135,25 @@ const createSectionTemplateLiteral = (section4, sectionContent) => {
 
 // Add a new section to the page
 const addSection = (sectionId, sectionContent) => {
-    // Create the section HTML using a template literal
-    const sectionHTML = `
-        <section id="${sectionId}" class="section">
-            <div class="landing__container">
-                <h2>${sectionContent.title}</h2>
-                <p>${sectionContent.content}</p>
-            </div>
-        </section>
-    `;
+    const mainContainer = document.getElementById('main__hero');
+    if (mainContainer) {
+        const sectionHTML = createSectionTemplateLiteral(sectionId, sectionContent);
+        mainContainer.insertAdjacentHTML('beforeend', sectionHTML);
 
-    // Add the new section to the page
-    document.querySelector('main').insertAdjacentHTML('beforeend', sectionHTML);
+        const newNavItem = document.createElement('li');
+        newNavItem.innerHTML = `<a 
+        href="#${sectionId}" 
+        class="menu__link">
+        ${sectionContent.title}
+        </a>`;
+        navbarList.appendChild(newNavItem);
 
-    // Create a new navigation item
-    const newNavItem = document.createElement('li');
-    newNavItem.innerHTML = `<a href="#${sectionId}" class="menu__link">${sectionContent.title}</a>`;
-
-    // Add the new navigation item to the navbar
-    document.getElementById('navbar__list').appendChild(newNavItem);
-
-    // Refresh the sections and navigation links
-    sections = document.querySelectorAll('section');
-
-    // Make sections collapsible
-    makeSectionsCollapsible();
+        // Refresh sections and navigation links
+        sections = document.querySelectorAll('section');
+    } else {
+        console.error('main__hero not found');
+    }
 };
-////////////////////////////////////////////
 
 /**
  * Events

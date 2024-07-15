@@ -89,6 +89,11 @@ section {
     transition: ease 0.3s all;
 }
 
+.menu__link.active-nav {
+    background: #767aec;
+    color: #fff;
+}
+
 /* Header Styles */
 .page__header {
     position: fixed;
@@ -293,5 +298,9 @@ section.your-active-class .landing__container::after {
 @media (max-width: 768px) {
     .menu__link {
         padding: 10px;
+    }
+    .menu__link.active-nav {
+        background: #767aec;
+        color: #fff;
     }
 }
